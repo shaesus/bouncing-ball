@@ -6,12 +6,18 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
+using UnityEngine.UI;
 
-public class GameManager : MonoBehaviour
+public class GameManager : MonoBehaviour, IPauseHandler
 {
     public static GameManager Instance { get; private set; }
 
     public TextMeshProUGUI BouncesLeftTMPro;
+
+    public GameObject PauseMenu;
+    public GameObject PauseButton;
+    
+    public PauseManager PauseManager { get; private set; }
     
     public int Score { get; set; }
     public int BouncesLeft { get; private set; }
@@ -30,7 +36,7 @@ public class GameManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-        
+
         IsGameStarted = false;
         GlobalEventManager.OnGameStart.AddListener(StartGame);
 
@@ -38,8 +44,17 @@ public class GameManager : MonoBehaviour
         Score = 0;
 
         BouncesLeftTMPro.text = "Bounces Left: " + BouncesLeft;
+        
+        Initialize();
+        
+        PauseManager.Register(this);
     }
 
+    private void Initialize()
+    {
+        PauseManager = new PauseManager();
+    }
+    
     public void UpdateBouncesCount()
     {
         Debug.Log("Updated bounces text!");
@@ -50,10 +65,30 @@ public class GameManager : MonoBehaviour
     private void StartGame()
     {
         IsGameStarted = true;
+        
+        PauseButton.SetActive(true);
     }
 
     public void EndGame()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+    
+    public void TogglePauseGame()
+    {
+        if (PauseManager.IsPaused)
+        {
+            PauseManager.SetPaused(false);
+        }
+        else
+        {
+            PauseManager.SetPaused(true);
+        }
+    }
+    
+    public void SetPaused(bool isPaused)
+    {
+        PauseMenu.SetActive(isPaused);
+        Time.timeScale = isPaused ? 0f : 1f;
     }
 }

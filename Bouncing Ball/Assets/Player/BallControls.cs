@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -9,7 +10,12 @@ public class BallControls : MonoBehaviour
 {
     public LayerMask groundLayer;
 
+    public TextMeshProUGUI ScoreText;
+    
     [SerializeField] private float boostDistance = 2f;
+
+    public float BoostDistance => boostDistance;
+
     [SerializeField] private float defaultBoostForce = 2f;
     
     private Rigidbody _rigidbody;
@@ -20,7 +26,10 @@ public class BallControls : MonoBehaviour
     private float _boostForce;
     
     private int _clickCount = 0;
+    private int _bounceCount = 0;
 
+    private float _lastYVelocityValue = 0;
+    
     private void Awake()
     {
         _rigidbody = GetComponent<Rigidbody>();
@@ -55,7 +64,7 @@ public class BallControls : MonoBehaviour
         {
             _clickCount = 0;
         }
-        
+
         if ((Input.GetMouseButtonDown(0) || Input.touchCount >= 1)
             && _canBoost && !_isOnGround && _clickCount == 0 && _rigidbody.velocity.y < 0)
         {
@@ -73,6 +82,24 @@ public class BallControls : MonoBehaviour
         {
             CameraFollow.Instance.SetNeedToFollow(false);
         }
+
+        var score = (int)transform.position.y;
+        if (GameManager.Instance.IsGameStarted && GameManager.Instance.Score < score)
+        {
+            GameManager.Instance.Score = (int)transform.position.y;
+            ScoreText.text = score.ToString();
+        }
+
+        if (_lastYVelocityValue == 0 && _rigidbody.velocity.y > 0)
+        {
+            _bounceCount++;
+            if (_bounceCount > 1)
+            {
+                GameManager.Instance.UpdateBouncesCount();
+            }
+        }
+
+        _lastYVelocityValue = _rigidbody.velocity.y;
     }
 
     private float GetBoostMultiplier(Vector3 position)
@@ -84,15 +111,24 @@ public class BallControls : MonoBehaviour
     
     private void OnCollisionEnter(Collision collision)
     {
+        Debug.Log("Collided with ground!");
         if (collision.gameObject.CompareTag("Ground"))
         {
             _isOnGround = true;
-            
+
             if (GameManager.Instance.IsGameStarted)
             {
-                _rigidbody.velocity = Vector3.zero;
+                if (GameManager.Instance.BouncesLeft <= 0)
+                {
+                    GameManager.Instance.EndGame();
+                }
+
+                else
+                {
+                    _rigidbody.velocity = Vector3.zero;
                 
-                _rigidbody.AddForce(Vector3.up * _boostForce, ForceMode.Impulse);
+                    _rigidbody.AddForce(Vector3.up * _boostForce, ForceMode.Impulse);
+                }
             }
         }
     }

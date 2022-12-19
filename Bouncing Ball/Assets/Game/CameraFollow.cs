@@ -14,7 +14,7 @@ public class CameraFollow : MonoBehaviour
     private Vector3 _defaultPosition;
     private Vector3 _cameraOffset;
 
-    private bool _needToFollow = false;
+    private bool _needToFollow;
     
     private float _cameraAspect;
     
@@ -30,8 +30,10 @@ public class CameraFollow : MonoBehaviour
         }
         
         _defaultPosition = transform.position;
-        FollowHeight = Camera.main.orthographicSize * 1.4f - 0.5f;
+        FollowHeight = Camera.main.orthographicSize * 1.4f - 4.15f + Camera.main.transform.position.y;
         _cameraOffset = new Vector3(0, FollowHeight, 0) - transform.position;
+
+        _needToFollow = false;
     }
 
     private void Update()

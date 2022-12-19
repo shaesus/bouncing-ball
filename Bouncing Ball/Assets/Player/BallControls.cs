@@ -10,8 +10,6 @@ public class BallControls : MonoBehaviour
 {
     public LayerMask groundLayer;
 
-    public TextMeshProUGUI ScoreText;
-    
     [SerializeField] private float boostDistance = 2f;
 
     public float BoostDistance => boostDistance;
@@ -29,6 +27,8 @@ public class BallControls : MonoBehaviour
     private int _bounceCount = 0;
 
     private float _lastYVelocityValue = 0;
+
+    private float BounceMultiplier => GameManager.Instance.BounceMultiplier;
     
     private void Awake()
     {
@@ -37,6 +37,12 @@ public class BallControls : MonoBehaviour
         _boostForce = defaultBoostForce;
         
         StartCoroutine(WaitForStart());
+        
+        GlobalEventManager.OnGameEnd.AddListener(() =>
+        {
+            _rigidbody.velocity = Vector3.zero;
+            StartCoroutine(WaitForStart());
+        });
     }
 
     private IEnumerator WaitForStart()
@@ -70,26 +76,38 @@ public class BallControls : MonoBehaviour
         {
             _clickCount++;
             
-            _boostForce += defaultBoostForce * GetBoostMultiplier(transform.position);
+            _boostForce += defaultBoostForce * GetBoostMultiplier(transform.position) * BounceMultiplier;
             boostDistance += 0.5f;
         }
 
-        if (transform.position.y >= CameraFollow.Instance.FollowHeight)
+        if (Input.GetMouseButton(1))
         {
-            CameraFollow.Instance.SetNeedToFollow(true);
+            var x = Camera.main.ScreenToWorldPoint(Input.mousePosition).x;
+            x = Mathf.Clamp(x, -2.15f, 2.15f);
+            
+            transform.position = new Vector3(x, transform.position.y, transform.position.z);
         }
-        else
-        {
-            CameraFollow.Instance.SetNeedToFollow(false);
-        }
+        
+        CameraFollow.Instance.SetNeedToFollow(transform.position.y >= CameraFollow.Instance.FollowHeight);
 
+        CheckScore();
+        CheckBounce();
+    }
+
+    private void CheckScore()
+    {
         var score = (int)transform.position.y;
-        if (GameManager.Instance.IsGameStarted && GameManager.Instance.Score < score)
+        if (!GameManager.Instance.IsGameStarted || GameManager.Instance.Score >= score)
         {
-            GameManager.Instance.Score = (int)transform.position.y;
-            ScoreText.text = score.ToString();
+            return;
         }
-
+        
+        GameManager.Instance.Score = score;
+        GlobalEventManager.SendOnScoreChanged();
+    }
+    
+    private void CheckBounce()
+    {
         if (_lastYVelocityValue == 0 && _rigidbody.velocity.y > 0)
         {
             _bounceCount++;
@@ -101,7 +119,7 @@ public class BallControls : MonoBehaviour
 
         _lastYVelocityValue = _rigidbody.velocity.y;
     }
-
+    
     private float GetBoostMultiplier(Vector3 position)
     {
         var deltaY = boostDistance - position.y;

@@ -42,7 +42,8 @@ public class CameraFollow : MonoBehaviour
     {
         if (_needToFollow)
         {
-            transform.position = FollowObject.transform.position - _cameraOffset;
+            transform.position = new Vector3(0, FollowObject.transform.position.y - _cameraOffset.y,
+                transform.position.z);
         }
     }
 

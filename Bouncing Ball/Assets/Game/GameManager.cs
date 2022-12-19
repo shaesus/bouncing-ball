@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
@@ -12,15 +13,14 @@ public class GameManager : MonoBehaviour, IPauseHandler
 {
     public static GameManager Instance { get; private set; }
 
-    public TextMeshProUGUI BouncesLeftTMPro;
+    [HideInInspector] public UnityEvent OnBounceCountChange = new UnityEvent();
 
-    public GameObject PauseMenu;
-    public GameObject PauseButton;
-    
     public PauseManager PauseManager { get; private set; }
     
     public int Score { get; set; }
     public int BouncesLeft { get; private set; }
+
+    public float BounceMultiplier { get; private set; }
 
     [SerializeField] private int _maxBounces;
     
@@ -37,19 +37,37 @@ public class GameManager : MonoBehaviour, IPauseHandler
             Destroy(gameObject);
         }
 
-        IsGameStarted = false;
-        GlobalEventManager.OnGameStart.AddListener(StartGame);
+        DontDestroyOnLoad(gameObject);
 
+        IsGameStarted = false;
+        
+        GlobalEventManager.OnGameStart.AddListener(StartGame);
+        GlobalEventManager.OnGameEnd.AddListener(() =>
+        {
+            BouncesLeft = _maxBounces;
+            IsGameStarted = false;
+            Score = 0;
+        });
+
+        BounceMultiplier = 1.5f;
         BouncesLeft = _maxBounces;
         Score = 0;
-
-        BouncesLeftTMPro.text = "Bounces Left: " + BouncesLeft;
         
         Initialize();
         
         PauseManager.Register(this);
     }
 
+    public void LvlUpBounceMultiplier()
+    {
+        BounceMultiplier += 0.5f;
+    }
+
+    public void IncreaseBounceCount()
+    {
+        _maxBounces++;
+    }
+    
     private void Initialize()
     {
         PauseManager = new PauseManager();
@@ -57,38 +75,31 @@ public class GameManager : MonoBehaviour, IPauseHandler
     
     public void UpdateBouncesCount()
     {
-        Debug.Log("Updated bounces text!");
         BouncesLeft--;
-        BouncesLeftTMPro.text = "Bounces Left: " + BouncesLeft;
+        OnBounceCountChange.Invoke();
     }
     
     private void StartGame()
     {
         IsGameStarted = true;
-        
-        PauseButton.SetActive(true);
     }
 
     public void EndGame()
     {
+        GlobalEventManager.SendOnGameEnd();
+        
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
     
     public void TogglePauseGame()
     {
-        if (PauseManager.IsPaused)
-        {
-            PauseManager.SetPaused(false);
-        }
-        else
-        {
-            PauseManager.SetPaused(true);
-        }
+        PauseManager.SetPaused(!PauseManager.IsPaused);
+        
+        GlobalEventManager.SendOnPauseToggle();
     }
     
     public void SetPaused(bool isPaused)
     {
-        PauseMenu.SetActive(isPaused);
         Time.timeScale = isPaused ? 0f : 1f;
     }
 }

@@ -22,7 +22,7 @@ public class GameManager : MonoBehaviour, IPauseHandler
 
     public float BounceMultiplier { get; private set; }
 
-    [SerializeField] private int _maxBounces;
+    public int MaxBounces { get; private set; }
     
     public bool IsGameStarted { get; private set; }
 
@@ -36,7 +36,7 @@ public class GameManager : MonoBehaviour, IPauseHandler
         {
             Destroy(gameObject);
         }
-
+        
         DontDestroyOnLoad(gameObject);
 
         IsGameStarted = false;
@@ -44,13 +44,14 @@ public class GameManager : MonoBehaviour, IPauseHandler
         GlobalEventManager.OnGameStart.AddListener(StartGame);
         GlobalEventManager.OnGameEnd.AddListener(() =>
         {
-            BouncesLeft = _maxBounces;
+            BouncesLeft = MaxBounces;
             IsGameStarted = false;
             Score = 0;
         });
 
-        BounceMultiplier = 1.5f;
-        BouncesLeft = _maxBounces;
+        BounceMultiplier = PlayerPrefs.GetFloat("BounceMultiplier", 1.0f);
+        MaxBounces = PlayerPrefs.GetInt("MaxBounces", 3);
+        BouncesLeft = MaxBounces;
         Score = 0;
         
         Initialize();
@@ -61,11 +62,13 @@ public class GameManager : MonoBehaviour, IPauseHandler
     public void LvlUpBounceMultiplier()
     {
         BounceMultiplier += 0.5f;
+        PlayerPrefs.SetFloat("BounceMultiplier", BounceMultiplier);
     }
 
     public void IncreaseBounceCount()
     {
-        _maxBounces++;
+        MaxBounces++;
+        PlayerPrefs.SetInt("MaxBounces", MaxBounces);
     }
     
     private void Initialize()

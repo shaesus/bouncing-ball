@@ -18,9 +18,9 @@ public class ShopLot : MonoBehaviour
     public Image ButtonImage;
     public Image CoinImage;
     
-    [SerializeField] private int _price;
+    [SerializeField] protected int _price;
 
-    private void Awake()
+    protected void Awake()
     {
         PriceTMPro.text = _price.ToString();
     }
@@ -39,7 +39,7 @@ public class ShopLot : MonoBehaviour
         PriceTMPro.text = _price.ToString();
     }
 
-    private void DisableButton()
+    protected void DisableButton()
     {
         Utils.ChangeImageAlpha(ButtonImage, 0.5f);
         Utils.ChangeImageAlpha(CoinImage, 0.5f);

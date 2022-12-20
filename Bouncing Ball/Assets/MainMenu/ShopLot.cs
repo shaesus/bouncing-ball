@@ -8,44 +8,38 @@ using UnityEngine.UI;
 
 public class ShopLot : MonoBehaviour
 {
-    public Slider Slider;
+    public Slider slider;
 
-    public TextMeshProUGUI CurrentValueTMPro;
-    public TextMeshProUGUI PriceTMPro;
+    public TextMeshProUGUI currentValueTMPro;
+    public TextMeshProUGUI priceTMPro;
 
-    public Button PurchaseButton;
+    public Button purchaseButton;
 
-    public Image ButtonImage;
-    public Image CoinImage;
+    public Image buttonImage;
+    public Image coinImage;
     
-    [SerializeField] protected int _price;
-
-    protected void Awake()
-    {
-        PriceTMPro.text = _price.ToString();
-    }
-
+    [SerializeField] protected int price;
+    
     public void OnBuy()
     {
-        Slider.value++;
-        if (Slider.value == Slider.maxValue)
+        slider.value++;
+        if (slider.value == slider.maxValue)
         {
             DisableButton();
             return;
         }
         
-        _price = (int)(_price * 1.5f);
-
-        PriceTMPro.text = _price.ToString();
+        price = (int)(price * 1.5f);
+        priceTMPro.text = price.ToString();
     }
 
     protected void DisableButton()
     {
-        Utils.ChangeImageAlpha(ButtonImage, 0.5f);
-        Utils.ChangeImageAlpha(CoinImage, 0.5f);
+        Utils.ChangeImageAlpha(buttonImage, 0.5f);
+        Utils.ChangeImageAlpha(coinImage, 0.5f);
         
-        PriceTMPro.text = "--";
+        priceTMPro.text = "--";
         
-        PurchaseButton.enabled = false;
+        purchaseButton.enabled = false;
     }
 }

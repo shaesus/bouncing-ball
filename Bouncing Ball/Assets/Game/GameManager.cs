@@ -8,25 +8,44 @@ using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
+using Scene = UnityEditor.SearchService.Scene;
 
 public class GameManager : MonoBehaviour, IPauseHandler
 {
     public static GameManager Instance { get; private set; }
 
-    [HideInInspector] public UnityEvent OnBounceCountChange = new UnityEvent();
-
+    public static UnityEvent OnHighScoreChange = new UnityEvent();
+    
     public PauseManager PauseManager { get; private set; }
     
     public int Score { get; set; }
-    public int BouncesLeft { get; private set; }
-
+    public int HighScore { get; private set; }
+    
+    public int BouncesLeft { get; set; }
+    public int Money { get; private set; }
+    
     public float BounceMultiplier { get; private set; }
-
+    public float BounceMinMultiplier { get; private set; } = 1f;
+    public float MultiplierIncreaseValue { get; private set; } = 0.5f;
+    
     public int MaxBounces { get; private set; }
+    public int MinBouncesCount { get; private set; } = 3;
+    public int BouncesIncreaseValue { get; private set; } = 1;
     
     public bool IsGameStarted { get; private set; }
-
+    
     private void Awake()
+    {
+        Initialize();
+        
+        DontDestroyOnLoad(gameObject);
+        GlobalEventManager.OnGameRestart.AddListener(ResetValues);
+        GlobalEventManager.OnGameRestart.AddListener(()=>IsGameStarted = false);
+        
+        PauseManager.Register(this);
+    }
+
+    private void Initialize()
     {
         if (Instance == null)
         {
@@ -37,63 +56,75 @@ public class GameManager : MonoBehaviour, IPauseHandler
             Destroy(gameObject);
         }
         
-        DontDestroyOnLoad(gameObject);
-
+        PauseManager = new PauseManager();
+        
         IsGameStarted = false;
         
-        GlobalEventManager.OnGameStart.AddListener(StartGame);
-        GlobalEventManager.OnGameEnd.AddListener(() =>
-        {
-            BouncesLeft = MaxBounces;
-            IsGameStarted = false;
-            Score = 0;
-        });
-
-        BounceMultiplier = PlayerPrefs.GetFloat("BounceMultiplier", 1.0f);
-        MaxBounces = PlayerPrefs.GetInt("MaxBounces", 3);
+        BounceMultiplier = PlayerPrefs.GetFloat("BounceMultiplier", BounceMinMultiplier);
+        MaxBounces = PlayerPrefs.GetInt("MaxBounces", MinBouncesCount);
+        Money = PlayerPrefs.GetInt("Money", 0);
+        HighScore = PlayerPrefs.GetInt("HighScore", 0);
+        
         BouncesLeft = MaxBounces;
         Score = 0;
-        
-        Initialize();
-        
-        PauseManager.Register(this);
     }
 
+    public void ResetValues()
+    {
+        BouncesLeft = MaxBounces;
+        IsGameStarted = false;
+        Score = 0;
+    }
+    
+    public void IncreaseMoney(int amount)
+    {
+        Money += amount;
+    }
+    
     public void LvlUpBounceMultiplier()
     {
-        BounceMultiplier += 0.5f;
+        BounceMultiplier += MultiplierIncreaseValue;
         PlayerPrefs.SetFloat("BounceMultiplier", BounceMultiplier);
     }
 
     public void IncreaseBounceCount()
     {
-        MaxBounces++;
+        MaxBounces += BouncesIncreaseValue;
+        BouncesLeft = MaxBounces;
         PlayerPrefs.SetInt("MaxBounces", MaxBounces);
     }
     
-    private void Initialize()
-    {
-        PauseManager = new PauseManager();
-    }
-    
-    public void UpdateBouncesCount()
-    {
-        BouncesLeft--;
-        OnBounceCountChange.Invoke();
-    }
-    
-    private void StartGame()
+    public void StartGame()
     {
         IsGameStarted = true;
+        
+        GlobalEventManager.SendOnGameStart();
     }
 
-    public void EndGame()
+    public void RestartGame()
     {
-        GlobalEventManager.SendOnGameEnd();
+        Time.timeScale = 1f;
         
+        GlobalEventManager.SendOnGameRestart();
+
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
     
+    public void EndGame()
+    {
+        if (Score > HighScore)
+        {
+            OnHighScoreChange.Invoke();
+            HighScore = Score;
+            PlayerPrefs.SetInt("HighScore", HighScore);
+        }
+        
+        Time.timeScale = 0f;
+        
+        GlobalEventManager.SendOnGameEnd();
+        //TODO: Game End Menu
+    }
+
     public void TogglePauseGame()
     {
         PauseManager.SetPaused(!PauseManager.IsPaused);

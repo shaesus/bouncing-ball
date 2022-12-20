@@ -5,10 +5,23 @@ using UnityEngine;
 
 public class MaxBounceCountShopLot : ShopLot
 {
+    private int MaxBounces => GameManager.Instance.MaxBounces;
+    private int MinBounces => GameManager.Instance.MinBouncesCount;
+    private int IncreaseValue => GameManager.Instance.BouncesIncreaseValue;
+
+    private void Awake()
+    {
+        purchaseButton.onClick.AddListener(GameManager.Instance.IncreaseBounceCount);
+        purchaseButton.onClick.AddListener(UpdateMaxBouncesLot);
+    }
+
     private void Start()
     {
-        Slider.value = PlayerPrefs.GetFloat("BouncesSliderValue", 0);
-        if (!Convert.ToBoolean(PlayerPrefs.GetInt("BouncesButtonEnabled", 1)))
+        slider.value = (MaxBounces - 3) / IncreaseValue;
+        price = Utils.CalculatePrice(IncreaseValue, price, MinBounces, MaxBounces);
+        priceTMPro.text = price.ToString();
+        
+        if (slider.value == slider.maxValue)
         {
             DisableButton();
         }
@@ -18,8 +31,6 @@ public class MaxBounceCountShopLot : ShopLot
 
     public void UpdateMaxBouncesLot()
     {
-        CurrentValueTMPro.text = GameManager.Instance.MaxBounces.ToString() + "x";
-        PlayerPrefs.SetFloat("BouncesSliderValue", Slider.value);
-        PlayerPrefs.SetInt("BouncesButtonEnabled", PurchaseButton.enabled ? 1 : 0);
+        currentValueTMPro.text = GameManager.Instance.MaxBounces.ToString() + "x";
     }
 }

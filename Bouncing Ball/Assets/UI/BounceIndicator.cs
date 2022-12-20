@@ -2,33 +2,34 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class BounceIndicator : MonoBehaviour
 {
-    public BallControls Ball;
+    public BallControls ball;
 
-    public Gradient Gradient;
+    public Gradient gradient;
 
-    public Image Fill;
+    public Image fill;
 
     private Rigidbody _ballRb;
     
     private void Awake()
     {
-        _ballRb = Ball.GetComponent<Rigidbody>();
+        _ballRb = ball.GetComponent<Rigidbody>();
     }
 
     private void Update()
     {
-        if (Ball.transform.position.y <= Ball.BoostDistance && _ballRb.velocity.y < 0)
+        if (ball.transform.position.y <= ball.BoostDistance && _ballRb.velocity.y < 0)
         {
-            Fill.fillAmount = (Ball.BoostDistance - Ball.transform.position.y + 0.5f) / Ball.BoostDistance;
-            Fill.color = Gradient.Evaluate(Fill.fillAmount);
+            fill.fillAmount = (ball.BoostDistance - ball.transform.position.y + 0.5f) / ball.BoostDistance;
+            fill.color = gradient.Evaluate(fill.fillAmount);
         }
         else
         {
-            Fill.fillAmount = 0;
+            fill.fillAmount = 0;
         }
     }
 }

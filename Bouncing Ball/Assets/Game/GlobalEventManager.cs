@@ -5,10 +5,11 @@ using UnityEngine.Events;
 
 public class GlobalEventManager : MonoBehaviour
 {
-    public static UnityEvent OnGameStart = new UnityEvent();
-    public static UnityEvent OnPauseToggle = new UnityEvent();
-    public static UnityEvent OnGameEnd = new UnityEvent();
-    public static UnityEvent OnScoreChanged = new UnityEvent();
+    public static readonly UnityEvent OnGameStart = new UnityEvent();
+    public static readonly UnityEvent OnPauseToggle = new UnityEvent();
+    public static readonly UnityEvent OnGameEnd = new UnityEvent();
+    public static readonly UnityEvent OnGameRestart = new UnityEvent();
+    public static readonly UnityEvent OnScoreChanged = new UnityEvent();
     
     public static void SendOnGameStart()
     {
@@ -23,6 +24,11 @@ public class GlobalEventManager : MonoBehaviour
     public static void SendOnGameEnd()
     {
         OnGameEnd.Invoke();
+    }
+    
+    public static void SendOnGameRestart()
+    {
+        OnGameRestart.Invoke();
     }
     
     public static void SendOnScoreChanged()

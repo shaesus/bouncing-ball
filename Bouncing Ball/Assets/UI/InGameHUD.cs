@@ -8,36 +8,61 @@ using UnityEngine.UI;
 
 public class InGameHUD : MonoBehaviour
 {
-    public TextMeshProUGUI BouncesLeftTMPro;
-    public TextMeshProUGUI ScoreTextTMPro;
-    
-    public GameObject PauseMenu;
-    public GameObject PauseButtonGO;
+    public TextMeshProUGUI bouncesLeftTMPro;
+    public TextMeshProUGUI scoreTextTMPro;
 
-    public Button MainMenuButton;
+    public TextMeshProUGUI resultScoreTMPro;
+    public TextMeshProUGUI highScoreTMPro;
+
+    public GameObject newHighScoreText;
+    
+    public GameObject endGameMenu;
+    public GameObject pauseMenu;
+    public GameObject pauseButtonGo;
+    public GameObject restartButtonGoHUD;
+    public GameObject startGamePanel;
+    
+    public Button restartButton;
     
     private GameManager GameManager => GameManager.Instance;
-    
+
     private void Start()
     {
-        BouncesLeftTMPro.text = "Bounces Left: " + GameManager.BouncesLeft;
-        GlobalEventManager.OnGameStart.AddListener(()=>PauseButtonGO.SetActive(true));
-        GlobalEventManager.OnPauseToggle.AddListener(()=>PauseMenu.SetActive(GameManager.PauseManager.IsPaused));
+        UpdateBoucesCountText();
+        
+        GlobalEventManager.OnGameStart.AddListener(()=>
+        {
+            pauseButtonGo.SetActive(true);
+            restartButtonGoHUD.SetActive(true);
+            Destroy(startGamePanel);
+        });
+
+        GlobalEventManager.OnPauseToggle.AddListener(()=>pauseMenu.SetActive(GameManager.PauseManager.IsPaused));
         GlobalEventManager.OnScoreChanged.AddListener(UpdateScoreText);
-        GameManager.OnBounceCountChange.AddListener(UpdateBoucesCountText);
+        GlobalEventManager.OnGameEnd.AddListener(()=>
+        {
+            endGameMenu.SetActive(true);
+            resultScoreTMPro.text = "Score: " + GameManager.Score;
+            highScoreTMPro.text = "High Score: " + GameManager.HighScore;
+        });
         
-        MainMenuButton.onClick.AddListener(GlobalEventManager.SendOnGameEnd);
+        BallControls.Instance.onBounceCountChange.AddListener(UpdateBoucesCountText);
         
-        PauseButtonGO.GetComponent<Button>().onClick.AddListener(GameManager.TogglePauseGame);
+        GameManager.OnHighScoreChange.AddListener(()=>newHighScoreText.SetActive(true));
+        
+        restartButton.onClick.AddListener(GameManager.RestartGame);
+        
+        restartButtonGoHUD.GetComponent<Button>().onClick.AddListener(GameManager.RestartGame);
+        pauseButtonGo.GetComponent<Button>().onClick.AddListener(GameManager.TogglePauseGame);
     }
 
     private void UpdateBoucesCountText()
     {
-        BouncesLeftTMPro.text = "Bounces Left: " + GameManager.BouncesLeft;
+        bouncesLeftTMPro.text = "Bounces Left: " + GameManager.BouncesLeft;
     }
 
     private void UpdateScoreText()
     {
-        ScoreTextTMPro.text = GameManager.Score.ToString();
+        scoreTextTMPro.text = GameManager.Score.ToString();
     }
 }

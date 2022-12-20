@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class CameraFollow : MonoBehaviour
 {
@@ -9,7 +10,7 @@ public class CameraFollow : MonoBehaviour
 
     public float FollowHeight { get; private set; }
     
-    public GameObject FollowObject;
+    public GameObject followObject;
     
     private Vector3 _defaultPosition;
     private Vector3 _cameraOffset;
@@ -21,6 +22,11 @@ public class CameraFollow : MonoBehaviour
     private float _cameraAspect;
     
     private void Awake()
+    {
+        Initialize();
+    }
+
+    private void Initialize()
     {
         if (Instance == null)
         {
@@ -37,12 +43,12 @@ public class CameraFollow : MonoBehaviour
 
         _needToFollow = false;
     }
-
+    
     private void Update()
     {
         if (_needToFollow)
         {
-            transform.position = new Vector3(0, FollowObject.transform.position.y - _cameraOffset.y,
+            transform.position = new Vector3(0, followObject.transform.position.y - _cameraOffset.y,
                 transform.position.z);
         }
     }

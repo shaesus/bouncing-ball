@@ -5,10 +5,23 @@ using UnityEngine;
 
 public class BounceMultiplierShopLot : ShopLot
 {
+    private float BounceMultiplier => GameManager.Instance.BounceMultiplier;
+    private float MinMultiplier => GameManager.Instance.BounceMinMultiplier;
+    private float IncreaseValue => GameManager.Instance.MultiplierIncreaseValue;
+
+    private void Awake()
+    {
+        purchaseButton.onClick.AddListener(GameManager.Instance.LvlUpBounceMultiplier);
+        purchaseButton.onClick.AddListener(UpdateMultiplierLot);
+    }
+
     private void Start()
     {
-        Slider.value = PlayerPrefs.GetFloat("MultiplierSliderValue", 0);
-        if (!Convert.ToBoolean(PlayerPrefs.GetInt("MultiplierButtonEnabled", 1)))
+        slider.value = (BounceMultiplier - MinMultiplier) / IncreaseValue;
+        price = Utils.CalculatePrice(IncreaseValue, price, MinMultiplier, BounceMultiplier);
+        priceTMPro.text = price.ToString();
+        
+        if (slider.value == slider.maxValue)
         {
             DisableButton();
         }
@@ -18,8 +31,6 @@ public class BounceMultiplierShopLot : ShopLot
 
     public void UpdateMultiplierLot()
     {
-        CurrentValueTMPro.text = GameManager.Instance.BounceMultiplier.ToString() + "x";
-        PlayerPrefs.SetFloat("MultiplierSliderValue", Slider.value);
-        PlayerPrefs.SetInt("MultiplierButtonEnabled", PurchaseButton.enabled ? 1 : 0);
+        currentValueTMPro.text = GameManager.Instance.BounceMultiplier.ToString() + "x";
     }
 }

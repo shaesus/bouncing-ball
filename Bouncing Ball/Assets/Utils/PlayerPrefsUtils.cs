@@ -6,7 +6,6 @@ public class PlayerPrefsUtils : MonoBehaviour
 {
     public void ClearPlayerPrefs()
     {
-        PlayerPrefs.DeleteKey("BounceMultiplier");
-        PlayerPrefs.DeleteKey("MaxBounces");
+        PlayerPrefs.DeleteAll();
     }
 }

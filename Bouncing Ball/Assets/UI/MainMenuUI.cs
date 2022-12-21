@@ -18,11 +18,16 @@ public class MainMenuUI : MonoBehaviour
     
     private void Start()
     {
-        moneyTMPro.text = Money.ToString();
+        UpdateMoneyText();
         
         _submenus.Add(upgradesMenu);
     }
 
+    public void UpdateMoneyText()
+    {
+        moneyTMPro.text = Money.ToString();
+    }
+    
     public void OpenUpgradesMenu()
     {
         mainMenu.SetActive(false);

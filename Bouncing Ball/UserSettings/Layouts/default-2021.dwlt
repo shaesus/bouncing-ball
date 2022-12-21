@@ -19,7 +19,7 @@ MonoBehaviour:
     width: 1536
     height: 780.8
   m_ShowMode: 4
-  m_Title: Hierarchy
+  m_Title: Game
   m_RootView: {fileID: 6}
   m_MinSize: {x: 875, y: 371}
   m_MaxSize: {x: 10000, y: 10000}
@@ -48,7 +48,7 @@ MonoBehaviour:
   m_MinSize: {x: 300, y: 200}
   m_MaxSize: {x: 24288, y: 16192}
   vertical: 0
-  controlID: 93
+  controlID: 424
 --- !u!114 &3
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -223,7 +223,7 @@ MonoBehaviour:
   m_MinSize: {x: 200, y: 200}
   m_MaxSize: {x: 16192, y: 16192}
   vertical: 1
-  controlID: 94
+  controlID: 66
 --- !u!114 &10
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -248,7 +248,7 @@ MonoBehaviour:
   m_MinSize: {x: 200, y: 100}
   m_MaxSize: {x: 16192, y: 8096}
   vertical: 0
-  controlID: 95
+  controlID: 67
 --- !u!114 &11
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -317,13 +317,13 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/Prefabs
+    - Assets/Prefabs/Obstacle Sets
     m_Globs: []
     m_OriginalText: 
   m_ViewMode: 1
   m_StartGridSize: 64
   m_LastFolders:
-  - Assets/Prefabs
+  - Assets/Prefabs/Obstacle Sets
   m_LastFoldersGridSize: -1
   m_LastProjectPath: "C:\\Users\\\u0410\u0440\u0442\u0451\u043C\\Unity Projects\\bouncing-ball\\Bouncing
     Ball"
@@ -331,9 +331,9 @@ MonoBehaviour:
     m_IsLocked: 0
   m_FolderTreeState:
     scrollPos: {x: 0, y: 79}
-    m_SelectedIDs: a4620000
-    m_LastClickedID: 25252
-    m_ExpandedIDs: 000000008a62000092620000ccde000000ca9a3b
+    m_SelectedIDs: 1a960000
+    m_LastClickedID: 38426
+    m_ExpandedIDs: 000000008a620000a462000000ca9a3b
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -452,7 +452,7 @@ MonoBehaviour:
     m_ControlHash: -371814159
     m_PrefName: Preview_InspectorPreview
   m_LastInspectedObjectInstanceID: -1
-  m_LastVerticalScrollValue: 331.20007
+  m_LastVerticalScrollValue: 0
   m_GlobalObjectId: 
   m_InspectorMode: 0
   m_LockTracker:
@@ -489,23 +489,23 @@ MonoBehaviour:
   m_SceneHierarchy:
     m_TreeViewState:
       scrollPos: {x: 0, y: 0}
-      m_SelectedIDs: 
-      m_LastClickedID: 0
-      m_ExpandedIDs: e24cffff284effffb44fffffe850fffff451ffffc453ffffde5affff127afffff68bfffffca5ffffdabfffff20c3ffff3af2ffffb2f8ffff58f9ffff26fbffff28fbfffff4ffffffea6000000461000066630000bc650000b2660000586e00004e6f0000f87700006eac000092ac000018ad000090af000090b0000026b400004ab40000dab400006ad000008ed00000ecd000001ed10000f8dd00001cde0000acde0000a8e10000a8f6000052f7000048fc000090fc000080ff0000a4ff0000f2ff0000b4160100ce160100561701002a2601004a28010004290100002e0100ba2e0100de340100983501009a3a0100ec3c0100fc3d0100b63e010008470100c2470100
+      m_SelectedIDs: f69c0000
+      m_LastClickedID: 40182
+      m_ExpandedIDs: da7affff36a8ffff0eb2ffff26fbffff28fbffffea600000046100002a610000c66100000462000008620000ce810000e281000090820000b8820000c49c0000
       m_RenameOverlay:
         m_UserAcceptedRename: 0
-        m_Name: High Score Text
-        m_OriginalName: High Score Text
+        m_Name: 
+        m_OriginalName: 
         m_EditFieldRect:
           serializedVersion: 2
           x: 0
           y: 0
           width: 0
           height: 0
-        m_UserData: -34286
+        m_UserData: 0
         m_IsWaitingForDelay: 0
         m_IsRenaming: 0
-        m_OriginalEventType: 0
+        m_OriginalEventType: 11
         m_IsRenamingFilename: 0
         m_ClientGUIView: {fileID: 4}
       m_SearchString: 
@@ -592,7 +592,7 @@ MonoBehaviour:
       floating: 0
       collapsed: 0
       displayed: 1
-      snapOffset: {x: 0, y: 0}
+      snapOffset: {x: 0, y: 24.8}
       snapOffsetDelta: {x: 0, y: 0}
       snapCorner: 0
       id: unity-transform-toolbar
@@ -762,9 +762,9 @@ MonoBehaviour:
   m_PlayAudio: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: 593.30884, y: 962.8325, z: 32.081352}
+    m_Target: {x: -2.7224293, y: 5.2635136, z: -5.0981665}
     speed: 2
-    m_Value: {x: 593.30884, y: 962.8325, z: 32.081352}
+    m_Value: {x: -2.7224293, y: 5.2635136, z: -5.0981665}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -811,17 +811,17 @@ MonoBehaviour:
     m_GridAxis: 1
     m_gridOpacity: 0.5
   m_Rotation:
-    m_Target: {x: -0.056969095, y: -0.001497564, z: -0.000085453714, w: 0.9983752}
+    m_Target: {x: 0.022497658, y: -0.007498468, z: 0.00016824357, w: 0.9997162}
     speed: 2
-    m_Value: {x: -0.056969076, y: -0.0014975634, z: -0.000085453685, w: 0.9983748}
+    m_Value: {x: 0.022497715, y: -0.007498487, z: 0.000168244, w: 0.9997188}
   m_Size:
-    m_Target: 955.8852
+    m_Target: 6.8469
     speed: 2
-    m_Value: 955.8852
+    m_Value: 6.8469
   m_Ortho:
-    m_Target: 1
+    m_Target: 0
     speed: 2
-    m_Value: 1
+    m_Value: 0
   m_CameraSettings:
     m_Speed: 1.0204899
     m_SpeedNormalized: 0.51

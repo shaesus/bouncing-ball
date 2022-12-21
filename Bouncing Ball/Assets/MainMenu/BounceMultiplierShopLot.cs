@@ -11,8 +11,8 @@ public class BounceMultiplierShopLot : ShopLot
 
     private void Awake()
     {
-        purchaseButton.onClick.AddListener(GameManager.Instance.LvlUpBounceMultiplier);
-        purchaseButton.onClick.AddListener(UpdateMultiplierLot);
+        OnBuy.AddListener(GameManager.Instance.LvlUpBounceMultiplier);
+        OnBuy.AddListener(UpdateMultiplierLot);
     }
 
     private void Start()

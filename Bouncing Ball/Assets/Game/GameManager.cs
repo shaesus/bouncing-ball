@@ -41,6 +41,11 @@ public class GameManager : MonoBehaviour, IPauseHandler
         DontDestroyOnLoad(gameObject);
         GlobalEventManager.OnGameRestart.AddListener(ResetValues);
         GlobalEventManager.OnGameRestart.AddListener(()=>IsGameStarted = false);
+        GlobalEventManager.OnGameEnd.AddListener(() =>
+        {
+            Money += Score;
+            PlayerPrefs.SetInt("Money", Money);
+        });
         
         PauseManager.Register(this);
     }
@@ -69,6 +74,12 @@ public class GameManager : MonoBehaviour, IPauseHandler
         Score = 0;
     }
 
+    public void DecreaseMoney(int value)
+    {
+        Money -= value;
+        PlayerPrefs.SetInt("Money", Money);
+    }
+    
     public void ResetValues()
     {
         BouncesLeft = MaxBounces;
@@ -118,7 +129,9 @@ public class GameManager : MonoBehaviour, IPauseHandler
             HighScore = Score;
             PlayerPrefs.SetInt("HighScore", HighScore);
         }
-        
+
+        IsGameStarted = false;
+        Debug.Log("Ended game!");
         Time.timeScale = 0f;
         
         GlobalEventManager.SendOnGameEnd();

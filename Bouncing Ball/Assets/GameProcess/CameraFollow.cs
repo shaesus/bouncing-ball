@@ -38,7 +38,7 @@ public class CameraFollow : MonoBehaviour
         }
         
         _defaultPosition = transform.position;
-        FollowHeight = MainCam.orthographicSize * 1.4f - 4.15f + MainCam.transform.position.y;
+        FollowHeight = MainCam.orthographicSize * 1.4f - 7f + MainCam.transform.position.y;
         _cameraOffset = new Vector3(0, FollowHeight, 0) - transform.position;
 
         _needToFollow = false;

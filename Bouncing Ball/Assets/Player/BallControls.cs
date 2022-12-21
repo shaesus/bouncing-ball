@@ -78,6 +78,8 @@ public class BallControls : MonoBehaviour
     
     private void Update()
     {
+        if (GameManager.Instance.IsGameStarted == false) return;
+        
         _canBoost = Physics.Raycast(transform.position, Vector3.down, boostDistance, groundLayer);
 
         if (!_canBoost)
@@ -143,28 +145,26 @@ public class BallControls : MonoBehaviour
     
     private void OnCollisionEnter(Collision collision)
     {
-        Debug.Log("Collided with ground!");
-        if (!collision.gameObject.CompareTag("Ground"))
-        {
-            return;
-        }
-        
-        _isOnGround = true;
+        if (!GameManager.Instance.IsGameStarted) return;
 
-        if (!GameManager.Instance.IsGameStarted)
+        if (collision.gameObject.CompareTag("Ground"))
         {
-            return;
-        }
+            _isOnGround = true;
         
-        if (GameManager.Instance.BouncesLeft <= 0)
+            if (GameManager.Instance.BouncesLeft == 0 && GameManager.Instance.IsGameStarted)
+            {
+                GameManager.Instance.EndGame();
+            }
+            else
+            {
+                _rigidbody.velocity = Vector3.zero;
+                
+                _rigidbody.AddForce(Vector3.up * _boostForce, ForceMode.Impulse);
+            }
+        }
+        else if (collision.gameObject.CompareTag("Obstacle"))
         {
             GameManager.Instance.EndGame();
-        }
-        else
-        {
-            _rigidbody.velocity = Vector3.zero;
-                
-            _rigidbody.AddForce(Vector3.up * _boostForce, ForceMode.Impulse);
         }
     }
 

@@ -11,8 +11,8 @@ public class MaxBounceCountShopLot : ShopLot
 
     private void Awake()
     {
-        purchaseButton.onClick.AddListener(GameManager.Instance.IncreaseBounceCount);
-        purchaseButton.onClick.AddListener(UpdateMaxBouncesLot);
+        OnBuy.AddListener(GameManager.Instance.IncreaseBounceCount);
+        OnBuy.AddListener(UpdateMaxBouncesLot);
     }
 
     private void Start()

@@ -14,6 +14,9 @@ public class ObstacleSpawner : MonoBehaviour
     
     private float _spawnHeight;
 
+    [SerializeField] private float distanceBetweenRows = 3;
+    [SerializeField] private int rowCount = 3;
+
     private float FollowHeight => CameraFollow.Instance.FollowHeight;
     
     private void Start()
@@ -31,6 +34,15 @@ public class ObstacleSpawner : MonoBehaviour
         _spawnHeight += 16;
 
         var rndIndex = Random.Range(0, obstacleSets.Length);
-        Instantiate(obstacleSets[rndIndex], new Vector3(0, _spawnHeight, 0), Quaternion.identity);
+        
+        var obstacleSet = obstacleSets[rndIndex];
+
+        for (int i = 0; i < rowCount; i++)
+        {
+            Instantiate(obstacleSet, new Vector3(0, _spawnHeight + distanceBetweenRows * i, 0),
+                Quaternion.identity);
+        }
+
+        distanceBetweenRows += 0.5f;
     }
 }

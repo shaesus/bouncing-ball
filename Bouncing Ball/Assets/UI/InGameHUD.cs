@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
+using UnityEngine.SocialPlatforms.Impl;
 using UnityEngine.UI;
 
 public class InGameHUD : MonoBehaviour
@@ -13,6 +14,7 @@ public class InGameHUD : MonoBehaviour
 
     public TextMeshProUGUI resultScoreTMPro;
     public TextMeshProUGUI highScoreTMPro;
+    public TextMeshProUGUI receivedMoneyTMPro;
 
     public GameObject newHighScoreText;
     
@@ -44,6 +46,7 @@ public class InGameHUD : MonoBehaviour
             endGameMenu.SetActive(true);
             resultScoreTMPro.text = "Score: " + GameManager.Score;
             highScoreTMPro.text = "High Score: " + GameManager.HighScore;
+            receivedMoneyTMPro.text = "+" + GameManager.Score;
         });
         
         BallControls.Instance.onBounceCountChange.AddListener(UpdateBoucesCountText);

@@ -81,7 +81,7 @@ public class BallControls : MonoBehaviour
         if (GameManager.Instance.IsGameStarted == false) return;
         
         _canBoost = Physics.Raycast(transform.position, Vector3.down, boostDistance, groundLayer);
-
+        
         if (!_canBoost)
         {
             _clickCount = 0;
@@ -108,8 +108,17 @@ public class BallControls : MonoBehaviour
 
         CheckScore();
         CheckBounce();
+        KeepInFrame();
     }
 
+    private void KeepInFrame()
+    {
+        if (transform.position.x > 2.15f)
+            transform.position = new Vector3(2.15f, transform.position.y, transform.position.z);
+        else if (transform.position.x < -2.15f)
+            transform.position = new Vector3(-2.15f, transform.position.y, transform.position.z);
+    }
+    
     private void CheckScore()
     {
         var score = (int)transform.position.y;
